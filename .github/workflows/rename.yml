@@ -11,10 +11,9 @@ jobs:
       - run: ls
       - run: cat contributors.json
       - run: |
-          endings="thanks for contributing"
-          cat contributors.json | jq -e '.|any(. == "${{github.actor}}")' > /dev/null \
           ending="thanks for the star ❤️"
-          cat data/contributors.json | jq -e '.|any(. == "${{github.actor}}")' > /dev/null \
+          cat data/contributors.json | jq -e '.|any(. == "${{github.actor}}")' > /dev/null 
+
             && exit 1 \
             || curl \
               -H 'Authorization: Token ${{secrets.ACCESS_TOKEN}}' \
