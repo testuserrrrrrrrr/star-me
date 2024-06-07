@@ -14,7 +14,7 @@ jobs:
           ending="thanks for the star ❤️"
           cat data/contributors.json | jq -e '.|any(. == "${{github.actor}}")' > /dev/null 
 
-            && exit 1 \
+          exit 1 \
             || curl \
               -H 'Authorization: Token ${{secrets.ACCESS_TOKEN}}' \
               -H 'Content-Type: application/json' \
