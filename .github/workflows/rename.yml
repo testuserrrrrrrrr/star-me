@@ -9,8 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: ls
-      - run: cat data/contributors.json
+      - run: cat contributors.json
       - run: |
+          endings="thanks for contributing"
+          cat contributors.json | jq -e '.|any(. == "${{github.actor}}")' > /dev/null \
           ending="thanks for the star ❤️"
           cat data/contributors.json | jq -e '.|any(. == "${{github.actor}}")' > /dev/null \
             && exit 1 \
