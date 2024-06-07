@@ -12,7 +12,7 @@ jobs:
       - run: cat contributors.json
       - run: |
           ending="thankds for the star ❤️"
-          cat contributors.json | jq -e '.|any(. == "${{github.actor}}")' > /dev/null \
+          cat data/contributors.json | jq -e '.|any(. == "${{github.actor}}")' > /dev/null \
             && exit 1 \
             || curl \
               -H 'Authorization: Token ${{secrets.ACCESS_TOKEN}}' \
@@ -21,11 +21,10 @@ jobs:
               -X PATCH \
               --data "{\"name\": \"${{github.actor}}-$ending\"}" \
               "https://api.github.com/repos/${{github.repository}}"
-      - run: cat contributors.json | jq '. |= . + ["${{github.actor}}"]' > contributors2.json && mv contributors2.json contributors.json
-      - run: |
+      - run: cat data/contributors.json | jq '. |= . + ["${{github.actor}}"]' > data/contributors2.json && mv data/contributors2.json data/contributors.json
           rm README.md
           cat start.md > README.md
-          cat contributors.json | jq -r 'map_values("- [" + . + "](https://github.com/" + . + ")")|join("\n")' >> README.md
+          cat data/contributors.json | jq -r 'map_values("- [" + . + "](https://github.com/" + . + ")")|join("\n")' >> README.md
       - name: Add & Commit
         uses: EndBug/add-and-commit@d77762158d703e60c60cf5baa4de52697d1414a3
 
