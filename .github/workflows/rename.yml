@@ -11,7 +11,7 @@ jobs:
       - run: ls
       - run: cat data/contributors.json
       - run: |
-          ending="thankds for the star ❤️"
+          ending="thanks for the star ❤️"
           cat data/contributors.json | jq -e '.|any(. == "${{github.actor}}")' > /dev/null \
             && exit 1 \
             || curl \
