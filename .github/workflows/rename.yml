@@ -1,0 +1,33 @@
+on:
+  watch:
+    types: [started]
+name: Rename repository
+jobs:
+  run:
+    name: Rename
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: ls
+      - run: cat contributors.json
+      - run: |
+          ending="thankds for the star ❤️"
+          cat contributors.json | jq -e '.|any(. == "${{github.actor}}")' > /dev/null \
+            && exit 1 \
+            || curl \
+              -H 'Authorization: Token ${{secrets.ACCESS_TOKEN}}' \
+              -H 'Content-Type: application/json' \
+              -H 'Accept: application/json' \
+              -X PATCH \
+              --data "{\"name\": \"${{github.actor}}-$ending\"}" \
+              "https://api.github.com/repos/${{github.repository}}"
+      - run: cat contributors.json | jq '. |= . + ["${{github.actor}}"]' > contributors2.json && mv contributors2.json contributors.json
+      - run: |
+          rm README.md
+          cat start.md > README.md
+          cat contributors.json | jq -r 'map_values("- [" + . + "](https://github.com/" + . + ")")|join("\n")' >> README.md
+      - name: Add & Commit
+        uses: EndBug/add-and-commit@d77762158d703e60c60cf5baa4de52697d1414a3
+
+        with:
+          message: 🐸 ${{ github.actor }}
